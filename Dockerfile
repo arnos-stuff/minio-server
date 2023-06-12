@@ -82,5 +82,10 @@ RUN sudo mv minio /usr/local/bin/
 RUN mkdir ~/minio
 EXPOSE 9000
 EXPOSE 9090
-CMD ["minio", "server", "~/minio", "--console-address", ":9090"]
+
+RUN minio server ~/minio \
+    --address "0.0.0.0:9000"\
+    --console-address "0.0.0.0:9090"\
+    --ftp="adress=:8080"
+# CMD ["minio", "server", "~/minio", ]
 
