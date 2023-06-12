@@ -12,6 +12,9 @@ if [ "$1" = "omz" ]; then
 elif [ "$1" = "zi" ]; then
     cp ./Dockerfiles/zi.Dockerfile Dockerfile;
     building=true;
+elif [ "$1" = "lean" ]; then
+    cp ./Dockerfiles/lean.Dockerfile Dockerfile;
+    building=true;
 elif [ "$1" = "run" ]; then
     docker run -p 0.0.0.0:9000:9000 -p 0.0.0.0:9090:9090 $NAME;
 else
