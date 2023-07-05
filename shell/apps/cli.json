@@ -1,0 +1,77 @@
+{
+    "params": [
+        {
+            "flag":"roots",
+            "alias":"r",
+            "kind":"list",
+            "sep":",",
+            "default": ["/", "/", "/"]
+        },
+        {
+            "flag":"names",
+            "alias":"n",
+            "kind":"list",
+            "sep":",",
+            "default": ["/api", "/console", "/"]
+        },
+        {
+            "flag":"ports",
+            "alias":"p",
+            "kind":"list",
+            "sep":",",
+            "default": [5000, 6000, 8000]
+        },
+        {
+            "flag":"out",
+            "alias":"o",
+            "kind":"value",
+            "default":"nginx.conf"
+        },
+        {
+            "flag":"cat",
+            "alias":"c",
+            "kind":"bool",
+            "default":false
+        },
+    ],
+    "conditions" : [
+        {
+            "or":["ports", "roots", "names"]
+        }
+    ],
+    "script": [
+        `generate_nginx_config() {
+            local -n names=$1
+            local -n ports=$2
+            local -n roots=$3
+        
+            # Check if the number of names, ports, and servers are the same
+            if [ ${#names[@]} -ne ${#ports[@]} ] || [ ${#names[@]} -ne ${#roots[@]} ]; then
+                echo "The number of names, ports, and servers must be the same."
+                echo "${#names[@]} ${#ports[@]} ${#roots[@]}"
+                exit 1
+            fi
+        
+            # Generate NGINX upstream ports and routes
+            for index in ${!names[@]}; do
+                local name=${names[index]}
+                local port=${ports[index]}
+                local root=${root[index]}
+        
+                if [ "$root" == "" ]; then
+                  root="/"
+                fi
+        
+                echo "server {"
+                echo "    server_name $name www.$name;"
+                echo "    listen $port;"
+                echo "    root $root;"
+                echo "}"
+                echo ""
+        
+                
+            done
+        }`,
+        `generate_nginx_config names ports roots`
+    ]
+}
